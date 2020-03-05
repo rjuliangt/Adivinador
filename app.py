@@ -4,13 +4,12 @@ rootNode = binarynode('Que genero tienen quien gano la medalla de oro en natacio
 
 rootNode.insertLeft('Cuantos anios tienes','18')
 
-
 def printQuestion(menssage):
     val = int(input("{}".format(menssage)))
     return val
 
 def __main__():
-    n = printQuestion("Que genero tienen quien gano la medalla de oro en natacion?")
+    nas = printQuestion("Que genero tienen quien gano la medalla de oro en natacion?")
     print("Inicio de Juego")
     print("Pregunta: {}".format(rootNode.question))
     print("Respuesta {}".format(rootNode.answer))
