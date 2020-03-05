@@ -53,7 +53,7 @@ def insertDeport(deport,cate,id_game):
     db =  openConexion()
     if db != 'null':
         cursor = db.cursor()
-        sql = "INSERT INTO deports(ID_DEPORT,NAME_MEDAL,CATEGORIES,ID_OLYMPIC_GAME)\
+        sql = "INSERT INTO deports(ID_DEPORT,NAME_DEPORT,CATEGORIES,ID_OLYMPIC_GAME)\
         VALUES(NULL,'{0}','{1}',{2})".format(deport,cate,id_game)
         try:
             cursor.execute(sql)
@@ -144,6 +144,6 @@ def selectDB(sql_select):
 
     except:
         print('Error in select')
+    db.close()
 
-
-
+# insertDeport('Atletismo','50 Km',1,)
