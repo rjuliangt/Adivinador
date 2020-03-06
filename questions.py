@@ -1,24 +1,25 @@
 from gamedb import *
-
+import random
 def welcome():
-    print('\n\t#######################################\n \
+    print('\n     #################################################\n \
     #################################################\n \
-    SOY EL ADIVINADOR DE MEDALLISTAS OLIMPICOS :D \n \
-    ###############################################')
+     SOY EL ADIVINADOR DE MEDALLISTAS OLIMPICOS :D \n \
+    #################################################\n     #################################################')
     instruction()
     print('\nDeseas jugar?')
-    return int(input('1_Si      2_NO'))
+    return int(input('1_Si      2_NO ___'))
     
 def instruction():
     print("\n Este juego consiste en darle pistas al ente adividar para que\n \
     logre dar con el medallista en el que estas pensando, puedes salir del juego\n \
     presionando la letra 'O', bueno empecemos :)")    
-def frisAsk():
-    print('\nacaso el medallista en el que estas pensando es “Erick Barrondo ”?')
-    op = int(input('\t1) Si  2)NO :  '))
 
+def frisAsk():
+    print('\nAcaso el medallista en el que estas pensando es “Erick Barrondo ”?')
+    return int(input('\t1) Si  2)NO :  '))
+    
 def askOlympicGame():
-    print('\nDe que nacionalidad es el medallista?')
+    print('\nEn que Juego Olimpico participo el medallita?')
     sql = 'SELECT olympic_games.ID_OLYMPIC_GAME, olympic_games.COUNTRY FROM olympic_games WHERE ID_OLYMPIC_GAME > 0'
     name = selectDB(sql)
     return travelTable(name)
@@ -42,22 +43,21 @@ def askCategories():
     return travelTable(name)
 
 def askNameMedal():
+    num =random.randint(0, 2)
     sql = "SELECT medals.ID_MEDAL, medals.NAME_MEDAL FROM medals WHERE medals.ID_MEDAL > 0"
-    print('\nQué tipo de medalla gano? ')
     name = selectDB(sql)
-    return travelTable(name)
+    return name[num][1]
 
 def askNameCountry():
+    num = random.randint(0,19)
     sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY FROM countries WHERE countries.ID_COUNTRY > 0"
-    print('\nDe qué país es el medallista? ')
     name = selectDB(sql)
-    return travelTable(name)
+    return name[num][1]
 
-def askCityCountry():
-    sql = "SELECT countries.ID_COUNTRY, countries.CITY FROM countries WHERE countries.ID_COUNTRY > 0"
-    print('\nDe que ciudad es el medallista? ')
+def askCityCountry(id_country):
+    sql = "SELECT people.ID_PERSON, people.CITY FROM people WHERE people.ID_COUNTRY = {}".format(id_country)
     name = selectDB(sql)
-    return travelTable(name)
+    return name[1][1]
 
 def askArea():
     sql = "SELECT countries.ID_COUNTRY, countries.AREA FROM countries WHERE countries.ID_COUNTRY > 0"
@@ -99,8 +99,32 @@ def option(table):
         else:
             print("\nNo ingreso un valor correcto")
 
-welcome()
-askOlympicGame()
-# askCategories()
-# askNameMedal()
-# askAgePeople()
+def isGender():
+    ques = '\nAcaso el medallista es Masculino?'
+    print(ques)
+    n = int(input('1)Si  2)No : '))
+    return ques,n
+
+def isMedals():
+    ques ="\nEsta pensando en un medallista de {}?".format(askNameMedal())
+    print(ques)
+    n = int(input('1)Si  2)No : '))
+    return ques,n
+
+def isCountry():
+    ques ="\nEsta pensando en un medallista de {}?".format(askNameCountry())
+    print(ques)
+    n = int(input('1)Si  2)No : '))
+    return ques,n
+
+def isCity():
+    ques ="\nEs de la ciudad de {}?".format(askCityCountry(2))
+    print(ques)
+    n = int(input('1)Si  2)No : '))
+    return ques,n
+
+# def isMedals():
+#     ques ="\nEsta pensando en un medallista de {}?".format(askNameMedal())
+#     print(ques)
+#     n = int(input('1)Si  2)No : '))
+#     return ques,n
