@@ -1,4 +1,5 @@
-from gamedb import *
+from gamedb import selectDB
+
 import random
 def welcome():
     print('\n     #################################################\n \
@@ -10,9 +11,9 @@ def welcome():
     return int(input('1_Si      2_NO ___'))
     
 def instruction():
-    print("\n Este juego consiste en darle pistas al ente adividar para que\n \
-    logre dar con el medallista en el que estas pensando, puedes salir del juego\n \
-    presionando la letra 'O', bueno empecemos :)")    
+    print("\n     Este juego consiste en darle pistas al ente adivinador para que\n \
+    logre dar con el medallista en el que estas pensando, puedes \n \
+    salir del juego presionando la letra 'O', bueno empecemos :)")    
 
 def frisAsk():
     print('\nAcaso el medallista en el que estas pensando es “Erick Barrondo ”?')
@@ -30,40 +31,67 @@ def askYearGame():
     year = selectDB(sql)
     return travelTable(year)
     
-def askDeport():
-    sql = "SELECT deports.ID_DEPORT, deports.NAME_DEPORT FROM deports WHERE deports.ID_DEPORT > 0"
-    print('\nEn qué deporte participo el medallista? ')
-    name = selectDB(sql)
-    return travelTable(name)
+def askDeport(id_depo):
+    if id_depo == 'null':
+        sql = "SELECT deports.ID_DEPORT, deports.NAME_DEPORT FROM deports WHERE deports.ID_DEPORT > 0"
+        name = selectDB(sql)
+        nu = random.randint(0,len(name)-1)
+        return name[nu]
+    else:
+        sql = "SELECT deports.ID_DEPORT, deports.NAME_DEPORT FROM deports WHERE deports.ID_DEPORT = {}".format(id_depo)
+        print('\nEn qué deporte participo el medallista? ')
+        name = selectDB(sql)
+        return name
 
-def askCategories():
-    sql = "SELECT deports.ID_DEPORT, deports.CATEGORIES FROM deports WHERE deports.ID_DEPORT > 0"
-    print('\nEn qué Categoria del deporte participo el medallista? ')
-    name = selectDB(sql)
-    return travelTable(name)
 
-def askNameMedal():
-    num =random.randint(0, 2)
-    sql = "SELECT medals.ID_MEDAL, medals.NAME_MEDAL FROM medals WHERE medals.ID_MEDAL > 0"
-    name = selectDB(sql)
-    return name[num][1]
+def askCategories(id_cat):
+    if id_cat == 'null':
+        sql = "SELECT categories.ID_CATEGORIES, categories.NAME FROM categories WHERE categories.ID_CATEGORIES > 0"
+        name = selectDB(sql)
+        nu = random.randint(0,len(name)-1)
+        return name[nu]
+    else:
+        sql = "SELECT categories.ID_CATEGORIES, categories.NAME FROM categories WHERE categories.ID_DEPORT = {}".format(id_cat)
+        name = selectDB(sql)
+        return name
 
-def askNameCountry():
-    num = random.randint(0,19)
-    sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY FROM countries WHERE countries.ID_COUNTRY > 0"
-    name = selectDB(sql)
-    return name[num][1]
+def askNameMedal(id_med):
+    if id_med == 'null':
+        sql = "SELECT medals.ID_MEDAL, medals.NAME_MEDAL FROM medals WHERE medals.ID_MEDAL > 0"
+        name = selectDB(sql)
+        num =random.randint(0, len(name)-1)
+        return name[num]
+    else:
+        sql = "SELECT medals.ID_MEDAL, medals.NAME_MEDAL FROM medals WHERE medals.ID_MEDAL = {}".format(id_med)
+        name = selectDB(sql)
+        return name
 
-def askCityCountry(id_country):
+def askNameCountry(id_coun):
+    if id_coun == 'null':
+        sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY FROM countries WHERE countries.ID_COUNTRY > 0"
+        name = selectDB(sql)
+        num = random.randint(0,len(name)-1)
+        return name[num]
+    else:
+        sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY FROM countries WHERE countries.ID_COUNTRY = {}".format(id_coun)
+        name = selectDB(sql)
+        return name   
+
+def askCity(id_country):
     sql = "SELECT people.ID_PERSON, people.CITY FROM people WHERE people.ID_COUNTRY = {}".format(id_country)
     name = selectDB(sql)
     return name[1][1]
 
-def askArea():
-    sql = "SELECT countries.ID_COUNTRY, countries.AREA FROM countries WHERE countries.ID_COUNTRY > 0"
-    print('\nEn qué area vive el medallista? ')
-    name = selectDB(sql)
-    return travelTable(name)
+def askArea(id_per):
+    if id_per == 'null':
+        sql = "SELECT people.ID_PERSON, people.AGE FROM people WHERE people.ID_PERSON > 0"
+        cons = selectDB(sql)
+        ran = random.randint(0,len(cons)-1)
+        return cons[ran]    
+    else:
+        sql = "SELECT people.ID_PERSON, people.AGE FROM people WHERE people.ID_PERSON = {}".format(id_per)
+        cons = selectDB(sql)
+        return cons
 
 def askNamePeople():
     # sql = "SELECT people.ID_PERSON, people.FULL_NAME FROM people WHERE people.ID_PERSON > 0"
@@ -72,11 +100,16 @@ def askNamePeople():
     # name = selectDB(sql)
     return name
 
-def askAgePeople():
-    sql = "SELECT people.ID_PERSON, people.AGE FROM people WHERE people.ID_PERSON > 0"
-    print('Cuantos años tiene el medallista? ')
-    name = selectDB(sql)
-    return travelTable(name)
+def askAgePeople(id_per):
+    if id_per == "null":
+        sql = "SELECT people.ID_PERSON, people.AGE FROM people WHERE people.ID_PERSON > 0"
+        name = selectDB(sql)
+        n = random.randint(0,len(name)-1)
+        return name[n]
+    else:
+        sql = "SELECT people.ID_PERSON, people.AGE FROM people WHERE people.ID_PERSON = {}".format(id_per)
+        name = selectDB(sql)
+        return name
 
 def askGenderPeople():
     sql = "SELECT people.ID_PERSON, people.Gender FROM people WHERE people.ID_PERSON > 0"
@@ -86,9 +119,10 @@ def askGenderPeople():
 def travelTable(val):
     for nam in val:
         print('\t{}) {}'.format(nam[0],nam[1]))
-    return option(val)
+        
+    
 
-def option(table):
+def option2(table):
     if len(table) == 0:
         print("Sin datos")
     else:
@@ -99,29 +133,92 @@ def option(table):
         else:
             print("\nNo ingreso un valor correcto")
 
-def isGender():
-    ques = '\nAcaso el medallista es Masculino?'
-    print(ques)
-    n = int(input('1)Si  2)No : '))
-    return ques,n
+def isGender(gen):
+    if gen == 0:
+        ques = '\nEs masculino?'
+        print(ques)
+        n = option()
+        if n == 1:
+            return ques, 0
+        else:
+            return ques, 1
+    if gen == 1:
+        ques = '\nEs sexo femenino?'
+        print(ques)
+        n = option()
+        if n == 1:
+            return ques, 1
+        else:
+            return ques, 0
+    if gen == 'null':
+        isGender(random.randint(0,1))
 
-def isMedals():
-    ques ="\nEsta pensando en un medallista de {}?".format(askNameMedal())
+def isMedals(id_med):
+    id_tabl = askNameMedal(id_med)
+    ques ="\nEsta pensando en un medallista de {}?".format(id_tabl[0][1])
     print(ques)
-    n = int(input('1)Si  2)No : '))
-    return ques,n
+    n = option()
+    if n == 1:
+        return ques, id_tabl[0][1]
+    else:
+        return 'null'
 
-def isCountry():
-    ques ="\nEsta pensando en un medallista de {}?".format(askNameCountry())
+def isCountry(id_con):
+    id_table = askNameCountry(id_con)
+    ques ="\nEsta pensando en un medallista de {}?".format(id_table[0][1])
     print(ques)
-    n = int(input('1)Si  2)No : '))
-    return ques,n
+    n = option()
+    if n == 1:
+        return ques,id_table[0][0]
+    else:
+        return 'null'
 
-def isCity():
-    ques ="\nEs de la ciudad de {}?".format(askCityCountry(2))
+def isCity(id_ci):
+    id_name= askCity(id_ci)
+    ques ="\nEs de la ciudad de {}?".format(id_name[0][1])
     print(ques)
+    n = option()
+    if n == 1:
+        return ques,id_name[0][0]
+    else:
+        return 'null'
+
+def isCategories(id_ca):
+    id_name = askCategories(id_ca)
+    ques ="\nEs de la categoria de {}?".format(id_name[0][1])
+    print(ques)
+    n = option()
+    if n == 1:
+        return ques, id_name[0][0]
+    else:
+        return 'null'
+
+def isDeport(id_dep):
+    id_table = askDeport(id_dep)
+    ques ='\nAcaso el medallisata participo en la Categoria de "{}"? '.format(id_table[0][1]) 
+    print(ques)
+    n = option
+    if n == 1:
+        return ques, id_table[0][0]
+    else:
+        return 'null'
+
+def isAge(id_p):
+    id_tab = askAgePeople(id_p)
+    ques ='\nPiensas en un medallista que nacio en "{}"? '.format(id_tab[0][1])
+    print(ques)
+    n = option()
+    if n == 1:
+        return ques, id_tab[0][0]
+    else:
+         return 'null'
+
+
+def option():
     n = int(input('1)Si  2)No : '))
-    return ques,n
+    return n
+
+
 
 # def isMedals():
 #     ques ="\nEsta pensando en un medallista de {}?".format(askNameMedal())
