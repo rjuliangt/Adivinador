@@ -68,19 +68,26 @@ def askNameMedal(id_med):
 
 def askNameCountry(id_coun):
     if id_coun == 'null':
-        sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY FROM countries WHERE countries.ID_COUNTRY > 0"
+        sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY FROM countries WHERE countries.ID_COUNTRY > 0 "
         name = selectDB(sql)
         num = random.randint(0,len(name)-1)
         return name[num]
     else:
-        sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY FROM countries WHERE countries.ID_COUNTRY = {}".format(id_coun)
+        sql = "SELECT countries.ID_COUNTRY, countries.NAME_COUNTRY, people.ID_COUNTRY, people.GENDER FROM countries,people WHERE countries.ID_COUNTRY = people.ID_COUNTRY AND people.GENDER = '{}'".format(id_coun)
         name = selectDB(sql)
         return name   
 
 def askCity(id_country):
-    sql = "SELECT people.ID_PERSON, people.CITY FROM people WHERE people.ID_COUNTRY = {}".format(id_country)
-    name = selectDB(sql)
-    return name[1][1]
+    if id_country == 'null':
+        sql = "SELECT people.ID_PERSON, people.CITY FROM people WHERE people.ID_COUNTRY > 0"
+        name = selectDB(sql)
+        n = random.randint(0,len(name)-1)
+        return name[n]
+    else:
+        sql = "SELECT people.ID_PERSON, people.CITY FROM people WHERE people.ID_COUNTRY = {}".format(id_country)
+        name = selectDB(sql)
+        return name
+
 
 def askArea(id_per):
     if id_per == 'null':
@@ -134,24 +141,24 @@ def option2(table):
             print("\nNo ingreso un valor correcto")
 
 def isGender(gen):
-    if gen == 0:
+    if gen == 'M':
         ques = '\nEs masculino?'
         print(ques)
         n = option()
-        if n == 1:
-            return ques, 0
+        if n == "M":
+            return ques, 'M'
         else:
-            return ques, 1
-    if gen == 1:
+            return ques, "F"
+    if gen == "F":
         ques = '\nEs sexo femenino?'
         print(ques)
         n = option()
         if n == 1:
-            return ques, 1
+            return ques, "F"
         else:
-            return ques, 0
+            return ques, "M"
     if gen == 'null':
-        isGender(random.randint(0,1))
+        isGender('F')
 
 def isMedals(id_med):
     id_tabl = askNameMedal(id_med)
@@ -159,17 +166,17 @@ def isMedals(id_med):
     print(ques)
     n = option()
     if n == 1:
-        return ques, id_tabl[0][1]
+        return ques, id_tabl[0]
     else:
         return 'null'
 
 def isCountry(id_con):
     id_table = askNameCountry(id_con)
-    ques ="\nEsta pensando en un medallista de {}?".format(id_table[0][1])
+    ques = '\nEsta pensando en un medallista de {} ?'.format(id_table[0][1])
     print(ques)
     n = option()
     if n == 1:
-        return ques,id_table[0][0]
+        return ques,id_table[0]
     else:
         return 'null'
 
@@ -179,7 +186,7 @@ def isCity(id_ci):
     print(ques)
     n = option()
     if n == 1:
-        return ques,id_name[0][0]
+        return ques,id_name[0]
     else:
         return 'null'
 
@@ -189,30 +196,40 @@ def isCategories(id_ca):
     print(ques)
     n = option()
     if n == 1:
-        return ques, id_name[0][0]
+        return ques, id_name[0]
     else:
         return 'null'
 
 def isDeport(id_dep):
     id_table = askDeport(id_dep)
-    ques ='\nAcaso el medallisata participo en la Categoria de "{}"? '.format(id_table[0][1]) 
+    ques ='\nAcaso el medallisata participo en "{}"? '.format(id_table[1]) 
     print(ques)
-    n = option
+    n = option()
     if n == 1:
-        return ques, id_table[0][0]
+        return ques, id_table[0]
     else:
         return 'null'
 
 def isAge(id_p):
     id_tab = askAgePeople(id_p)
-    ques ='\nPiensas en un medallista que nacio en "{}"? '.format(id_tab[0][1])
+    ques ='\nPiensas en un medallista que nacio en "{}"? '.format(id_tab[1])
     print(ques)
     n = option()
     if n == 1:
-        return ques, id_tab[0][0]
+        return ques, id_tab[0]
     else:
          return 'null'
 
+def isPeople(id_gen,id_count,id_city):
+    sql = "SELECT people.ID_PERSON, people.FULL_NAME, countries.ID_COUNTRY FROM people, countries WHERE people.GENDER = '{0}' AND countries.ID_COUNTRY = {1} AND people.CITY = '{2}'".format(id_gen,id_count,id_city)
+    res = selectDB(sql)
+    if len(res) == 0:
+        print('No hay datos')
+        return 'null'
+    else:
+        # print(f'{res[0][1]}')
+        print("\nEs acaso '{}' en quien pensabas?".format(res[0][1]))
+        return res
 
 def option():
     n = int(input('1)Si  2)No : '))
@@ -225,3 +242,7 @@ def option():
 #     print(ques)
 #     n = int(input('1)Si  2)No : '))
 #     return ques,n
+
+# n = isCountry('null')
+# for m in n:
+#     print(f'{m}')
